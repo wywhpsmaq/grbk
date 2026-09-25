@@ -580,6 +580,9 @@ p { margin: 0; }
   margin: 40px 0;
 }
 
+.post-content a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+.post-content img { margin: 24px auto; border-radius: var(--radius-sm); }
+
 /* ========== 11. 页脚 ========== */
 .site-footer {
   border-top: 1px solid var(--border);
