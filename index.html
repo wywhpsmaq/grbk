@@ -8,6 +8,8 @@
 </head>
 <body>
 
+<canvas class="particle-canvas" aria-hidden="true"></canvas>
+
 <!-- 顶部滚动进度条 -->
 <div class="progress-bar" id="progressBar"></div>
 
@@ -21,8 +23,8 @@
 
     <nav class="nav-links">
       <a href="#" class="active" onclick="goHome(); return false;">文章</a>
-      <a href="#about">关于</a>
-      <a href="#footer">联系</a>
+      <a href="about.html">关于</a>
+      <a href="contact.html">联系</a>
     </nav>
 
     <div class="header-actions">
@@ -60,7 +62,7 @@
           </p>
           <div class="hero-actions">
             <a href="#posts" class="btn btn-primary">开始阅读</a>
-            <a href="#footer" class="btn btn-ghost">联系我</a>
+            <a href="contact.html" class="btn btn-ghost">联系我</a>
           </div>
         </div>
 
@@ -143,7 +145,7 @@
       </div>
 
       <div class="socials">
-        <a href="#" aria-label="GitHub" title="GitHub">
+        <a href="https://github.com/wywhpsmaq" aria-label="GitHub" title="GitHub" target="_blank" rel="noopener noreferrer">
           <svg viewBox="0 0 24 24" fill="currentColor">
             <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483
                      0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466
@@ -155,7 +157,7 @@
                      0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0 0 22 12.017C22 6.484 17.522 2 12 2z"/>
           </svg>
         </a>
-        <a href="#" aria-label="邮箱" title="邮箱">
+        <a href="mailto:wywhpsmaq@outlook.com" aria-label="邮箱" title="邮箱">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
                stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
             <rect x="3" y="5" width="18" height="14" rx="2"/>
@@ -171,9 +173,8 @@
         </a>
       </div>
     </div>
-
     <div class="copyright">
-      © 2025 Wywhpsmaq · 由 ☕ 与深夜驱动
+      © 2026 Wywhpsmaq · 由 ☕ 与深夜驱动
     </div>
   </div>
 </footer>
@@ -217,131 +218,6 @@
       <h2>什么时候不该用变量</h2>
       <p>也别走火入魔。只出现一次、且没有复用意义的值,直接写就好。变量是用来表达「这套系统里的规则」的,不是用来给每个数字取名的。</p>
       <p>判断标准很简单:如果这个值明天要改,我需要改几个地方?超过一个,就该抽出来。</p>
-    `
-    },
-    {
-      slug: 'intersection-observer',
-      title: '用 IntersectionObserver 做优雅的滚动动画',
-      excerpt: '告别 scroll 事件里的 getBoundingClientRect,浏览器原生提供的这个 API 又快又省心。',
-      date: '2025-05-30',
-      readTime: 6,
-      tags: ['JavaScript', '性能'],
-      content: `
-      <p>以前做「元素进入视口时淡入」这种效果,大家都是监听 <code>scroll</code> 事件,然后在回调里算 <code>getBoundingClientRect()</code>。问题是这个回调触发得极其频繁,一不小心就把主线程堵死了。</p>
-      <p>现在的标准做法是 <code>IntersectionObserver</code>。它由浏览器在合成线程里判断,回调只在交叉状态真正发生变化时才触发:</p>
-      <pre><code>const observer = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      entry.target.classList.add('visible');
-      observer.unobserve(entry.target); // 只触发一次
-    }
-  });
-}, {
-  threshold: 0.15,
-  rootMargin: '0px 0px -50px 0px'
-});
-
-document.querySelectorAll('.fade-in')
-  .forEach(el => observer.observe(el));</code></pre>
-      <h2>几个容易被忽略的细节</h2>
-      <ul>
-        <li><strong>用完就 unobserve。</strong>动画只播一次的话,记得在触发后取消观察,否则元素滚动回来还会反复触发。</li>
-        <li><strong>rootMargin 比 threshold 更好用。</strong>想让元素「提前一点」出现,负的 bottom margin 通常比调 threshold 更直观。</li>
-        <li><strong>别忘了降级。</strong>用 <code>prefers-reduced-motion</code> 尊重用户的系统设置,别让人晕。</li>
-      </ul>
-      <blockquote>好的动画应该让人感觉不到技术的存在,只觉得「顺」。</blockquote>
-      <p>这个 API 现在兼容性已经很好了,值得替换掉你项目里那些老旧的滚动监听。</p>
-    `
-    },
-    {
-      slug: 'dev-tools-2025',
-      title: '我的 2025 前端工具清单',
-      excerpt: '一份不追新、只求顺手的工具清单。包含编辑器、终端、调试和一点点效率小玩意。',
-      date: '2025-05-12',
-      readTime: 7,
-      tags: ['工具', '效率'],
-      content: `
-      <p>每年都有人问「现在该用什么工具」,我的答案一直是:用你顺手的那套,然后把精力留给真正的问题。不过既然问了,就列一下我目前的工作流。</p>
-      <h2>编辑器</h2>
-      <p>VS Code 依然是主力,配上一套自己调的快捷键。核心原则是:手不离键盘。任何需要我用鼠标完成三次以上的操作,都值得花十分钟写个 snippet 或者绑定快捷键。</p>
-      <h2>终端</h2>
-      <p>iTerm2 + zsh,加上几个别名。比如:</p>
-      <pre><code>alias gs="git status -sb"
-alias gl="git log --oneline --graph -20"
-alias ..="cd .."</code></pre>
-      <p>别小看这些别名,一天省下的那几秒钟,一年下来是几十个小时。</p>
-      <h2>调试</h2>
-      <p>浏览器 DevTools 的 Performance 面板值得专门花一个下午学习。大部分「页面卡」的问题,火焰图一眼就能看出来。</p>
-      <blockquote>工具的价值不在于新,而在于你能不能在肌肉记忆里调用它。</blockquote>
-      <p>最后一句忠告:别把时间花在折腾配置上。配置是为了让你更快地写代码,不是目的本身。</p>
-    `
-    },
-    {
-      slug: 'stop-chasing-perfect-code',
-      title: '为什么我不再追求「完美」的代码',
-      excerpt: '写了几年代码之后,我越来越相信:能被读懂、能被改动的代码,比优雅但没人敢碰的代码有价值得多。',
-      date: '2025-04-20',
-      readTime: 5,
-      tags: ['思考', '工程'],
-      content: `
-      <p>刚入行那几年,我有一个执念:代码要写得漂亮。抽象要恰到好处,命名要精准,每一处重复都要消除。为了把一个 30 行的函数拆成 5 个 6 行的小函数,我可以纠结一整个下午。</p>
-      <p>后来我接手了一个老项目,里面充斥着过度设计的痕迹。作者显然很聪明,每一层抽象都设计得很讲究——但没人敢改。因为改动任何一处,都要先理解整个体系。那一刻我突然意识到:</p>
-      <blockquote>代码是写给人读的,顺便让机器执行。</blockquote>
-      <h2>我现在更在意的三件事</h2>
-      <ul>
-        <li><strong>可读性优先于简洁性。</strong>一个直白的 40 行函数,胜过一个巧妙的三层嵌套。</li>
-        <li><strong>删除比添加更需要勇气。</strong>能不写的代码,就是最好的代码。</li>
-        <li><strong>为下一个人考虑。</strong>那个人很可能是三个月后的你自己。</li>
-      </ul>
-      <p>这不是说要放弃追求质量。而是要搞清楚:质量的衡量标准到底是什么?是代码的「美」,还是它解决问题的能力、以及被长期维护的成本?</p>
-      <p>答案显然是后者。</p>
-    `
-    },
-    {
-      slug: 'independent-dev-year-one',
-      title: '独立开发第一年,我学到的几件事',
-      excerpt: '从大厂离职做独立开发一年了。聊聊收入、心态,以及那些没人告诉过我的事。',
-      date: '2025-03-08',
-      readTime: 9,
-      tags: ['独立开发', '思考'],
-      content: `
-      <p>一年前的这个月,我提交了辞职信。当时的想法很简单:想做一个完全属于自己的产品,想验证一下「不靠公司,我能不能活下去」。</p>
-      <p>一年过去了,收入大概是上班时的六成。不算成功,但也没饿死。记录几点真实的感受。</p>
-      <h2>一、做出来只完成了 20%</h2>
-      <p>写代码是整件事里最舒服、最确定的部分。真正难的是:找到有人愿意付钱的问题,然后想办法让他们知道你做了个东西。</p>
-      <p>我花了三个月做出了第一版,又花了六个月才明白——那三个月做的东西,有一半根本没人需要。</p>
-      <h2>二、节奏感比自律更重要</h2>
-      <p>没有打卡,没有周会,最开始的一段时间我几乎每天都工作到凌晨。结果两个月后彻底崩了,一周什么都没干。</p>
-      <p>后来我把作息固定下来:上午写代码,下午处理杂事和用户反馈,晚上不工作。效率反而高了很多。</p>
-      <blockquote>自由不是想干什么就干什么,而是能持续地做该做的事。</blockquote>
-      <h2>三、把「上线」当成习惯</h2>
-      <p>第一个产品做了一年才上线,结果市场反应平平。第二个产品我三周就扔出去了,反而有了一些真实用户。</p>
-      <p>现在我信奉:能一周上线的,绝不做一个月。因为你的假设大概率是错的,越早发现越省钱。</p>
-      <h2>四、关于钱</h2>
-      <p>现金流是命。至少要留够 12 个月的生活费再辞职,这会极大影响你决策时的心理状态。缺钱的时候,人会做出很多短视的选择。</p>
-      <p>明年会不会继续?会的。至少现在,我还没想回去上班。</p>
-    `
-    },
-    {
-      slug: 'reading-notes-2025',
-      title: '2025 上半年读过的几本书',
-      excerpt: '技术书之外,也读了一些别的。挑几本印象深的聊聊。',
-      date: '2025-02-14',
-      readTime: 6,
-      tags: ['读书', '生活'],
-      content: `
-      <p>读书这件事,我越来越觉得不在于数量。一本真正读进去的书,比刷完十本书的目录有用得多。</p>
-      <h2>《深度工作》</h2>
-      <p>老书了,但每年重读都有新感受。核心观点很朴素:能长时间专注于一件难事的能力,正在变得越来越稀缺,因此也越来越值钱。</p>
-      <p>我的实践是:每天上午的 9 点到 12 点,关掉所有通知,只做一件事。</p>
-      <h2>《非暴力沟通》</h2>
-      <p>本来以为是鸡汤,读了之后发现不是。它讲的其实是:如何把「评判」翻译成「观察 + 感受 + 需求」。</p>
-      <p>比如把「你总是拖延」换成「我看到这周有三次没按时交付,我有点焦虑,因为我需要可预期的进度」。同样的意思,但对方能听进去了。</p>
-      <blockquote>沟通的目的不是赢,是让事情往前走。</blockquote>
-      <h2>《禅与摩托车维修艺术》</h2>
-      <p>这本书很难归类。表面是游记,内里在讨论「良质」——什么是好的工作,以及如何在技术工作中保持专注与诚实。</p>
-      <p>里面有一句话我记了很久:真正让人痛苦的往往不是问题本身,而是你对待问题的心情。</p>
-      <p>下半年想多读点文学,欢迎推荐。</p>
     `
     }
   ];
@@ -777,6 +653,7 @@ alias ..="cd .."</code></pre>
   renderPosts();
   loadPosts();
 </script>
+<script src="particles.js"></script>
 
 </body>
 </html>
