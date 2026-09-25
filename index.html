@@ -183,6 +183,7 @@
      1. 文章数据 —— 想加文章就在这里加一条
      ========================================================= */
   let POSTS = [];
+  const ARTICLE_FILES = ['1.md'];
   const FALLBACK_POSTS = [
     {
       slug: 'css-design-tokens',
@@ -364,19 +365,29 @@
   }
 
   async function loadPosts() {
+    const assetUrl = path => new URL(encodeURI(path.replace(/^\/+/, '')), document.baseURI).href;
+    let paths = ARTICLE_FILES;
+
     try {
-      const manifestResponse = await fetch('mdwd/index.json', { cache: 'no-cache' });
-      if (!manifestResponse.ok) throw new Error(`文章清单加载失败 (${manifestResponse.status})`);
-      const paths = await manifestResponse.json();
-      if (!Array.isArray(paths)) throw new Error('文章清单格式必须是数组');
+      const manifestResponse = await fetch(assetUrl('mdwd/index.json'), { cache: 'no-cache' });
+      if (manifestResponse.ok) {
+        const manifest = await manifestResponse.json();
+        const manifestPaths = Array.isArray(manifest) ? manifest : manifest.files;
+        if (Array.isArray(manifestPaths) && manifestPaths.length) paths = manifestPaths;
+      }
+    } catch (error) {
+      console.warn('文章清单不可用，将使用内置文章清单:', error);
+    }
+
+    try {
       const results = await Promise.all(paths.map(async path => {
-        const response = await fetch(`mdwd/${path}`, { cache: 'no-cache' });
+        const response = await fetch(assetUrl(`mdwd/${path}`), { cache: 'no-cache' });
         if (!response.ok) throw new Error(`${path} 加载失败 (${response.status})`);
         return postFromMarkdown(await response.text(), path);
       }));
       POSTS = results;
     } catch (error) {
-      console.error('无法加载 mdwd 中的文章:', error);
+      console.error('无法加载 mdwd 中的文章，将显示内置内容:', error);
       POSTS = FALLBACK_POSTS;
     }
     renderTags();

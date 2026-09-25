@@ -13,6 +13,10 @@
   let width = 0;
   let height = 0;
   let animationFrame = 0;
+  const requestFrame = window.requestAnimationFrame || function (callback) {
+    return window.setTimeout(callback, 1000 / 60);
+  };
+  const cancelFrame = window.cancelAnimationFrame || window.clearTimeout;
 
   function themeColors() {
     const styles = getComputedStyle(root);
@@ -93,7 +97,7 @@
     });
     context.globalAlpha = 1;
 
-    animationFrame = window.requestAnimationFrame(draw);
+    animationFrame = requestFrame(draw);
   }
 
   resize();
@@ -102,11 +106,18 @@
     resize();
     createParticles();
   }, { passive: true });
-  reduceMotion.addEventListener('change', createParticles);
-  isSmallScreen.addEventListener('change', createParticles);
+  const listenToMediaChange = function (mediaQuery, listener) {
+    if (mediaQuery.addEventListener) {
+      mediaQuery.addEventListener('change', listener);
+    } else if (mediaQuery.addListener) {
+      mediaQuery.addListener(listener);
+    }
+  };
+  listenToMediaChange(reduceMotion, createParticles);
+  listenToMediaChange(isSmallScreen, createParticles);
   draw();
 
   window.addEventListener('pagehide', function () {
-    window.cancelAnimationFrame(animationFrame);
+    cancelFrame(animationFrame);
   }, { once: true });
 })();
