@@ -233,8 +233,15 @@
     let text = mdEscape(value);
     text = text.replace(/!\[([^\]]*)\]\(([^)\s]+)(?:\s+"([^"]*)")?\)/g,
       (_, alt, src, title) => `<img src="${mdEscape(src)}" alt="${mdEscape(alt)}"${title ? ` title="${mdEscape(title)}"` : ''}>`);
-    text = text.replace(/\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g,
-      '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+    text = text.replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, (_, label, destination) => {
+      const isDomain = /^(?:www\.)?[\w-]+(?:\.[\w-]+)+(?:\/[^\s]*)?$/i.test(destination);
+      const href = isDomain ? `https://${destination}` : destination;
+      if (!/^(https?:\/\/|mailto:|\/|\.\/|\.\.\/|#)/i.test(href)) {
+        return `[${label}](${destination})`;
+      }
+      const external = /^https?:\/\//i.test(href);
+      return `<a href="${mdEscape(href)}"${external ? ' target="_blank" rel="noopener noreferrer"' : ''}>${label}</a>`;
+    });
     text = text.replace(/`([^`]+)`/g, '<code>$1</code>');
     text = text.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
     text = text.replace(/__([^_]+)__/g, '<strong>$1</strong>');
@@ -305,7 +312,7 @@
         return;
       }
       const listItem = line.match(/^\s*[-*+]\s+(.+)$/);
-      const orderedItem = line.match(/^\s*\d+\.\s+(.+)$/);
+      const orderedItem = line.match(/^\s*\d+\.\s*(.+)$/);
       if (listItem || orderedItem) {
         flushParagraph();
         const nextType = orderedItem ? 'ol' : 'ul';
